@@ -1,12 +1,11 @@
-import React, {FC} from 'react';
-import FilesItem from "./FilesItem";
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../redux/store";
-import {tFile} from "../project-golbal-type";
+import React, {FC} from 'react';
+
 import {editTodoTitle} from "../redux/projectReducer/projectReducer";
+import {tFile, tEdit} from "../project-golbal-type";
+import {RootState} from "../redux/store";
+import FilesItem from "./FilesItem";
 
-
-export type tEdit = (item: tFile) => void
 
 interface iProps {
     id?: string
@@ -14,7 +13,11 @@ interface iProps {
 
 const Files: FC<iProps> = ({id}) => {
     const dispatch = useDispatch()
-    const files = useSelector((state: RootState) => state.counter.files.filter((item) => id ? item.parentId === id : !item.parentId));
+
+    const files = useSelector((state: RootState) => {
+        return state.counter.files.filter((item) => id ? item.parentId === id : !"")
+    });
+
     const editTitle: tEdit = (item) => {
         dispatch(editTodoTitle(item))
     }
@@ -22,7 +25,10 @@ const Files: FC<iProps> = ({id}) => {
     return (
         <div className="files">
             {files.filter(item => !item.deleted).map((item: tFile, index) => {
-                return <FilesItem key={item.id} item={item} editTitle={editTitle}/>
+                return <FilesItem editTitle={editTitle}
+                                  key={item.id}
+                                  item={item}
+                />
             })}
         </div>
     );

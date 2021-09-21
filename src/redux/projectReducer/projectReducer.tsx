@@ -1,5 +1,5 @@
-import {createSlice} from '@reduxjs/toolkit'
 import {tState} from "../../project-golbal-type";
+import {createSlice} from '@reduxjs/toolkit'
 
 const initialState: tState = {
     files: [],
@@ -12,6 +12,7 @@ export const counterSlice = createSlice({
     name: 'counter',
     initialState,
     reducers: {
+
         addFiles(state, action) {
             state.files = [...state.files, action.payload]
         },
@@ -61,7 +62,6 @@ export const counterSlice = createSlice({
         },
 
         deleteIconsHandler(state, action) {
-            console.log(action.payload, "action.payload")
             if (action.payload) {
                 state.menuTitle = []
             } else {
@@ -87,7 +87,6 @@ export const counterSlice = createSlice({
                 return idx < action.payload
             })
             state.menuTitle = [...files]
-
         },
 
         deleteAlert(state, action) {

@@ -1,15 +1,15 @@
-import React, {useState} from 'react';
-import {tFile} from "../project-golbal-type";
-import FolderIcon from '@material-ui/icons/Folder';
 import TextFieldsIcon from '@material-ui/icons/TextFields';
-import {tEdit} from "./Files";
 import {BrowserRouter, useHistory} from "react-router-dom"
+import FolderIcon from '@material-ui/icons/Folder';
 import {useDispatch} from "react-redux";
+import React, {useState} from 'react';
+
+import {tFile,tEdit} from "../project-golbal-type";
+import {tObj} from "../project-golbal-type";
 import {
-    backToBasketHandler, changeInputValue, deleteAlert,
-    deleteFromBasket,
-    deleteFromHome,
-    folderIconHandler,
+    backToBasketHandler, changeInputValue,
+    deleteAlert, deleteFromBasket,
+    deleteFromHome,folderIconHandler,
 } from "../redux/projectReducer/projectReducer";
 
 interface tProps {
@@ -17,18 +17,11 @@ interface tProps {
     editTitle: tEdit,
 }
 
-type tObj = {
-    title: string
-    id: number | boolean | string
-
-
-}
-
 function FilesItem({item, editTitle}: tProps) {
-    const history = useHistory()
-    const dispatch = useDispatch()
     const [value, setValue] = useState(item.title || '')
     const [isEdit, setIsEdit] = useState(false)
+    const dispatch = useDispatch()
+    const history = useHistory()
 
     const handleClick = () => {
         if (isEdit) {
@@ -41,6 +34,7 @@ function FilesItem({item, editTitle}: tProps) {
             setIsEdit(true)
         }
     }
+
     const handleDelete = () => {
         if (item.deleted) {
             dispatch(deleteFromBasket(item.id))
@@ -62,6 +56,7 @@ function FilesItem({item, editTitle}: tProps) {
         dispatch(deleteAlert(false))
 
     }
+
     const backToBasket: (id: number) => void = (id) => {
         dispatch(backToBasketHandler(item.id))
 
@@ -69,14 +64,16 @@ function FilesItem({item, editTitle}: tProps) {
 
     return (
         <BrowserRouter>
-            <div
-                className="filesItem"
-            >
+            <div className="filesItem">
                 {item.completed ?
-                    <FolderIcon onDoubleClick={() => breadCramps('file', {title: item.title, id: item.parentId})}/>
+                    <FolderIcon
+                        onDoubleClick={() => breadCramps('file', {title: item.title, id: item.parentId})}
+                    />
                     :
-                    <TextFieldsIcon onDoubleClick={() => breadCramps('text', {title: item.title, id: item.parentId})}
-                    />}
+                    <TextFieldsIcon
+                        onDoubleClick={() => breadCramps('text', {title: item.title, id: item.parentId})}
+                    />
+                }
                 <div>
                         <span
                             onClick={handleDelete}
@@ -84,22 +81,21 @@ function FilesItem({item, editTitle}: tProps) {
                             className={`editItem-button`}
                         >
                         <i className="far fa-trash-alt"/>
-               </span>
+                        </span>
                     {item.deleted ?
                         <span
                             onClick={() => backToBasket(item.id)}
-                            style={{color: isEdit ? "white" : "green"}}
                             className={`editItem-button`}
                         >
-                   <i className="fas fa-arrow-left"/>
-               </span> :
+                             <i className="fas fa-arrow-left"/>
+                         </span> :
                         <span
                             onClick={handleClick}
                             style={{color: isEdit ? "green" : "black"}}
                             className={`editItem-button`}
                         >
-                   <i className="fas fa-edit"/>
-               </span>}
+                             <i className="fas fa-edit"/>
+                        </span>}
                     <input value={value}
                            readOnly={!isEdit}
                            style={{color: isEdit ? "white" : "black"}}

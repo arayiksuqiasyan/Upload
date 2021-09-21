@@ -1,11 +1,14 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
-import DeleteIcon from '@material-ui/icons/Delete';
 import {Input, Icon, Button} from '@material-ui/core';
-import {Link} from "react-router-dom"
 import {useSelector, useDispatch} from "react-redux";
-import {RootState} from "../redux/store";
+import DeleteIcon from '@material-ui/icons/Delete';
+import {useHistory} from "react-router-dom";
 import Alert from '@material-ui/lab/Alert';
 
+import {tInputValue,tNewFile} from "../project-golbal-type";
+import {tFile} from "../project-golbal-type";
+import {RootState} from "../redux/store";
+import BreadCramps from "./BreadCramps";
 import {
     changeInputValue,
     addFiles,
@@ -13,11 +16,6 @@ import {
     changeHistoryText,
     deleteAlert,
 } from "../redux/projectReducer/projectReducer";
-import {tFile} from "../project-golbal-type";
-import {useHistory} from "react-router-dom";
-
-type tInputValue = (e: ChangeEvent<HTMLInputElement>) => void
-type tNewFile = (data: boolean) => void
 
 function NavBarList() {
     const [inputValue, setInputValue] = useState("")
@@ -29,8 +27,6 @@ function NavBarList() {
         const unsubscribe = history.listen(location => {
             if (history.action === 'POP') {
                 dispatch(deleteIconsHandler(false))
-                console.log(history)
-
             }
         })
 
@@ -40,11 +36,10 @@ function NavBarList() {
 
     }, [])
 
-    const {files, value, menuTitle, isOpen} = useSelector((state: RootState) => state.counter)
+    const {files, value, isOpen} = useSelector((state: RootState) => state.counter)
 
     const addNewFile: tNewFile = (completed) => {
         if (value !== "") {
-
             const fined = files.find((item) => item.title === inputValue)
             if (fined && history.location.pathname.slice(6) === fined.parentId) {
                 dispatch(deleteAlert(true))
@@ -74,14 +69,11 @@ function NavBarList() {
 
     const goBackHandler: (isAll?: boolean) => void = (isAll) => {
         if (isAll) {
-            // Lriv het tanel
             history.push("/")
             dispatch(deleteIconsHandler(true))
         } else {
-            // 1 hat het tanel
             history.goBack()
         }
-
     }
 
     const changeHistoryTextHandler: (index: number) => void = (index) => {
@@ -91,22 +83,33 @@ function NavBarList() {
     return (
         <div>
             <div className="NavBarList">
-                <span onClick={() => goBackHandler()}><i className="fas fa-angle-left"/></span>
-                <span onClick={() => goBackHandler(true)}><i className="fas fa-angle-double-left"/></span>
-                <Input color={"primary"} value={value} onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    setInputValue(e.target.value)
-                    changeValue(e)
-                }}/>
+                <span
+                    onClick={() => goBackHandler()}
+                >
+                    <i className="fas fa-angle-left"/>
+                </span>
+                <span
+                    onClick={() => goBackHandler(true)}
+                >
+                    <i className="fas fa-angle-double-left"/>
+                </span>
+                <Input
+                    value={value}
+                    color={"primary"}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        setInputValue(e.target.value)
+                        changeValue(e)
+                    }}/>
                 <Button
-                    onClick={(e) => addNewFile(true)}
-                    variant="contained"
                     color="primary"
+                    onClick={() => addNewFile(true)}
+                    variant="contained"
                     endIcon={<Icon>send</Icon>}
                 >
                     ADD NEW FOLDER
                 </Button>
                 <Button variant="outlined" color="default"
-                        onClick={(e) => addNewFile(false)}>
+                        onClick={() => addNewFile(false)}>
                     ADD NEW FILE
                 </Button>
                 <Button
@@ -118,22 +121,13 @@ function NavBarList() {
                     BASKET
                 </Button>
             </div>
-            <div style={{display: "flex", justifyContent: "center"}}>
+            <div className="menu-title">
                 <h1 className="titleMenuForPages">Files/</h1>
-                <div>
-                    {menuTitle.map((item, index) => {
-                        if (!item.id) {
-                            return <Link key={index} to={"/"} onClick={() => changeHistoryTextHandler(index)}
-                                         className="link-h1">{item.title}/</Link>
-                        } else {
-                            return <Link key={index} to={`/file/${item.id}`} onClick={() => {
-                                changeHistoryTextHandler(index)
-                            }} className="link-h1">{item.title}/</Link>
-                        }
-                    })}
-                </div>
+                <BreadCramps
+                    changeHistoryTextHandler={changeHistoryTextHandler}
+                />
             </div>
-            {isOpen && <Alert severity="error">одинаквие имя</Alert>}
+            {isOpen && <Alert severity="error">одинаковые имя</Alert>}
         </div>
     );
 }

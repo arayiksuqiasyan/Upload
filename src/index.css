@@ -79,6 +79,10 @@ code {
 .editItem-button {
     font-size: 17px;
     margin: 4px;
+    color: green;
+}
+.editItem-button.edited {
+
 }
 
 .filesItem {
@@ -140,4 +144,8 @@ code {
     filter: drop-shadow(0 0 4px white);
     font-size: 18px;
     cursor: pointer;
+}
+.menu-title{
+    display: flex;
+    justify-content: center;
 }
